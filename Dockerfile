@@ -1,14 +1,16 @@
 FROM python:3.9-slim
 
+# Install git
+RUN apt-get update && apt-get install -y git
+
+# Set working dir
 WORKDIR /app
 
-RUN apt update && apt install -y unzip && rm -rf /var/lib/apt/lists/*
+# Copy and install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
+# Copy the bot code
 COPY . .
 
-RUN pip install poetry
-RUN poetry config virtualenvs.create false && poetry install --no-root
-
-EXPOSE 8080
-
-CMD ["poetry", "run", "python3", "-m", "unzipbot"]
+CMD ["python", "-m", "unzipbot"]
